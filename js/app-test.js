@@ -81,9 +81,8 @@ var locationViewModel = function() {
         console.log(locTitle);
         console.log(address);
 
-        // bounds = new google.maps.LatLngBounds();
-        // infoWindow = new google.maps.InfoWindow();
-        // geocoder = new google.maps.Geocoder();
+        bounds = new google.maps.LatLngBounds();
+        geocoder = new google.maps.Geocoder();
 
         geocoder.geocode({'address': address}, function(results, status) {
             if (status === 'OK') {
@@ -103,13 +102,14 @@ var locationViewModel = function() {
                 self.markers().push(locationObj.marker);
                 // Create an onClick event to open an infoWindow at each marker.
                 locationObj.marker.addListener('click', function() {
-                    //populate info window
+
                     var infoString = locationObj.marker.title;
+                    //test
+                    console.log(infoString);
+                    //populate info window
                     infoWindow.setContent('<div>' + infoString + '</div>');
                     infoWindow.open(map, locationObj.marker);
-                    //test
-                    console.log(locationObj.marker.title);
-
+                    //close infoWindow
                     infoWindow.addListener('closeClick', function() {
                         infoWindow.setContent(null);
                     });
@@ -179,9 +179,7 @@ function initMap() {
          ]
     });
 
-    bounds = new google.maps.LatLngBounds();
     infoWindow = new google.maps.InfoWindow();
-    geocoder = new google.maps.Geocoder();
 
     ko.applyBindings(new locationViewModel());
 };
