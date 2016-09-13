@@ -9,20 +9,24 @@ body {
 }
 
 #sidebar {
-    display: none;
+    /*display: none;*/
+    width: 30%;
     height: 100%;
     position: absolute;
     top: 0;
-    left: -400px;
+    /*left: -400px;*/
     color: white;
-    transition: left 0.3s linear;
+    /*transition: left 0.3s linear;*/
+    transform: translate(-400px, 0);
+    transition: transform 0.3s ease;
 }
 
-#sidebar.visible{
-    display: block;
+#sidebar.open{
+    /*display: block;
     width: 30%;
     left: 0;
-    transition: left 0.3s linear;
+    transition: left 0.3s linear;*/
+    transform: translate(0, 0);
 }
 
 #header {
@@ -30,13 +34,10 @@ body {
     padding: 1.55em;
 }
 
-#filter {
-    border: 0;
-    padding: 0;
-}
-
 #filter-text {
     width: 100%;
+    border: 0;
+    padding: 0;
     float: left;
     text-align: center;
 }

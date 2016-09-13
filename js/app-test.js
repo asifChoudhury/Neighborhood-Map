@@ -150,7 +150,7 @@ var locationViewModel = function() {
 };
 
 $('#sidebar-btn').click(function(){
-    $('#sidebar').toggleClass('visible');
+    $('#sidebar').toggleClass('open');
     $('#map').toggleClass('adjust');
 });
 

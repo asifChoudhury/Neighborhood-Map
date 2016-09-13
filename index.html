@@ -9,9 +9,7 @@
 <body>
     <div id="sidebar">
         <div id="header">New York Locations</div>
-        <div id="filter">
-            <input id="filter-text" type="placeholder" value="Filter List" >
-        </div>
+        <input id="filter-text" type="placeholder" value="Filter List" >
         <ul id="location-list" data-bind="foreach: locationList">
             <li id="title"><div data-bind="text: title, click: $parent.openInfoWindow"></div></li>
         </ul>
