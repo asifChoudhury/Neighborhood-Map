@@ -7,19 +7,24 @@
     <link rel="stylesheet" type="text/css" href="css/styles.css">
 </head>
 <body>
-    <div id="header">
-        <div id="header-title">New York Locations</div>
+    <div id="sidebar">
+        <div id="header">New York Locations</div>
         <div id="filter">
-            <input id="filter-text" type="placeholder" value="Filter List">
-            <button id="btn-filter">Submit</button>
+            <input id="filter-text" type="placeholder" value="Filter List" >
         </div>
         <ul id="location-list" data-bind="foreach: locationList">
-            <br><br><li id="title"><div data-bind="text: title"></div></li>
+            <li id="title"><div data-bind="text: title, click: $parent.openInfoWindow"></div></li>
         </ul>
+    </div>
+    <div id="sidebar-btn">
+        <span></span>
+        <span></span>
+        <span></span>
     </div>
     <div id="map"></div>
 
     <script src="js/lib/knockout-3.4.0.js"></script>
+    <script src="js/lib/jquery-2.2.3.min.js"></script>
     <script src="js/app-test.js"></script>
     <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCC2GvY5w5IMVPMnputfxVDs_k_QJ_JVBg&callback=initMap""></script>
 </body>

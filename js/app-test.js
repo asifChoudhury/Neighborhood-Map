@@ -1,64 +1,64 @@
 var locations = [
     {
-            title: "The Museum of Modern Art",
-            location: {
-                address: "11 W 53rd St, New York, NY 10019"
-            }
-        },
-        {
-            title: "Solomon R. Guggenheim Museum",
-            location: {
-                address: "1071 5th Ave, New York, NY 10128"
-            }
-        },
-        {
-            title: "Central Park",
-            location: {
-                address: "Central Park, NY"
-            }
-        },
-        {
-            title: "Bryant Park",
-            location: {
-                address: "Bryant Park, NY"
-            }
-        },
-        {
-            title: "Hunter College",
-            location: {
-                address: "695 Park Ave, New York, NY 10065"
-            }
-        },
-        {
-            title: "Rockefeller Plaza",
-            location: {
-                address: "45 Rockefeller Plaza, New York, NY 10111"
-            }
-        },
-        {
-            title: "Times Square",
-            location: {
-                address: "Times Square, NY"
-            }
-        },
-        {
-            title: "World Trace Center",
-            location: {
-                address: "285 Fulton St, New York, NY 10007"
-            }
-        },
-        {
-            title: "Tao Uptown",
-            location: {
-                address: "42 E 58th St, New York, NY 10022"
-            }
-        },
-        {
-            title: "Le Cirque",
-            location: {
-                address: "151 E 58th St, New York, NY 10022"
-            }
+        title: "The Museum of Modern Art",
+        location: {
+            address: "11 W 53rd St, New York, NY 10019"
         }
+    },
+    {
+        title: "Solomon R. Guggenheim Museum",
+        location: {
+            address: "1071 5th Ave, New York, NY 10128"
+        }
+    },
+    {
+        title: "Central Park",
+        location: {
+            address: "Central Park, NY"
+        }
+    },
+    {
+        title: "Bryant Park",
+        location: {
+            address: "Bryant Park, NY"
+        }
+    },
+    {
+        title: "Hunter College",
+        location: {
+            address: "695 Park Ave, New York, NY 10065"
+        }
+    },
+    {
+        title: "Rockefeller Plaza",
+        location: {
+            address: "45 Rockefeller Plaza, New York, NY 10111"
+        }
+    },
+    {
+        title: "Times Square",
+        location: {
+            address: "Times Square, NY"
+        }
+    },
+    {
+        title: "World Trace Center",
+        location: {
+            address: "285 Fulton St, New York, NY 10007"
+        }
+    },
+    {
+        title: "Tao Uptown",
+        location: {
+            address: "42 E 58th St, New York, NY 10022"
+        }
+    },
+    {
+        title: "Le Cirque",
+        location: {
+            address: "151 E 58th St, New York, NY 10022"
+        }
+    }
 ];
 
 var locationModel = function(newLocation) {
@@ -74,6 +74,8 @@ var locationViewModel = function() {
 
     self.markers = ko.observableArray([]);
 
+    self.currentMarker = ko.observable(this.markers()[0]);
+
     self.locationList().forEach(function (locationObj) {
         var locTitle = locationObj.title;
         var address = locationObj.location.address;
@@ -81,8 +83,8 @@ var locationViewModel = function() {
         console.log(locTitle);
         console.log(address);
 
-        bounds = new google.maps.LatLngBounds();
-        geocoder = new google.maps.Geocoder();
+        var bounds = new google.maps.LatLngBounds();
+        var geocoder = new google.maps.Geocoder();
 
         geocoder.geocode({'address': address}, function(results, status) {
             if (status === 'OK') {
@@ -107,7 +109,7 @@ var locationViewModel = function() {
                     //test
                     console.log(infoString);
                     //populate info window
-                    infoWindow.setContent('<div>' + infoString + '</div>');
+                    infoWindow.setContent('<div >' + infoString + '</div>');
                     infoWindow.open(map, locationObj.marker);
                     //close infoWindow
                     infoWindow.addListener('closeClick', function() {
@@ -120,7 +122,7 @@ var locationViewModel = function() {
                         locationObj.marker.setAnimation(google.maps.Animation.BOUNCE);
                         setTimeout(function() {
                             locationObj.marker.setAnimation(null);
-                        }, 2000);
+                        }, 1400);
                     }
                 });
 
@@ -136,12 +138,24 @@ var locationViewModel = function() {
         });
         map.fitBounds(bounds);
     });
+
+    self.openInfoWindow = function(location) {
+        google.maps.event.trigger(location.marker, 'click');
+    };
+
+    // self.toggleSidebar = function() {
+    //     var a = document.getElementById("sidebar");
+    //     a.classList.add("visible");
+    // }
 };
 
+$('#sidebar-btn').click(function(){
+    $('#sidebar').toggleClass('visible');
+    $('#map').toggleClass('adjust');
+});
+
 var map;
-var bounds;
 var infoWindow;
-var geocoder;
 
 function initMap() {
     map = new google.maps.Map(document.getElementById('map'), {
