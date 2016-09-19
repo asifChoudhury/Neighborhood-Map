@@ -22,7 +22,7 @@
     <div id="map" data-bind="css: { adjust: mapAdjust }"></div>
     <script src="js/lib/knockout-3.4.0.js"></script>
     <script src="js/lib/jquery-2.2.3.min.js"></script>
-    <script src="js/app-test.js"></script>
-    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCC2GvY5w5IMVPMnputfxVDs_k_QJ_JVBg&callback=initMap""></script>
+    <script src="js/script.js"></script>
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCC2GvY5w5IMVPMnputfxVDs_k_QJ_JVBg&callback=initMap" onerror="googleError()"></script>
 </body>
 </html>

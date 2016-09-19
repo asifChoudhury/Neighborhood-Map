@@ -153,12 +153,19 @@ var locationViewModel = function() {
                         phone = data.response.venues[0].contact.formattedPhone;
                         website = data.response.venues[0].url;
 
-                        // If no phone or website can be obtained from foursquare, then initialize the variables with placeholder information.
+                        // If no information can be obtained from foursquare, then initialize the variables with placeholder information.
+                        var info = "Not available";
+                        if(!categoryName) {
+                            categoryName = info;
+                        }
+                        if(!address) {
+                            address = info;
+                        }
                         if(!phone) {
-                            phone = "No Phone";
+                            phone = info;
                         }
                         if (!website) {
-                            website = "No Website";
+                            website = info;
                         }
 
                         // Set content of the infoWindow with foursquare data.
@@ -349,6 +356,10 @@ function initMap() {
     // Apply bindings to get knockout to work.
     ko.applyBindings(new locationViewModel());
 };
+
+function googleError () {
+     alert("Google Maps failed to load!!!");
+}
 
 /*
    This function takes in a COLOR, and then creates a new marker
