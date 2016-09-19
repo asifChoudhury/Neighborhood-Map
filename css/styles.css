@@ -9,23 +9,16 @@ body {
 }
 
 #sidebar {
-    /*display: none;*/
     width: 30%;
     height: 100%;
     position: absolute;
-    top: 0;
-    /*left: -400px;*/
+    top: 2.5em;
     color: white;
-    /*transition: left 0.3s linear;*/
     transform: translate(-400px, 0);
     transition: transform 0.3s ease;
 }
 
 #sidebar.open{
-    /*display: block;
-    width: 30%;
-    left: 0;
-    transition: left 0.3s linear;*/
     transform: translate(0, 0);
 }
 
@@ -51,6 +44,7 @@ body {
     width: 100%;
     overflow: hidden;
     height: 100%;
+    cursor: pointer;
 }
 
 #title {
@@ -59,7 +53,6 @@ body {
 }
 
 #sidebar-btn {
-    display: inline-block;
     width: 30px;
     height: 20px;
     margin: 20px;
@@ -96,3 +89,33 @@ body {
     width: 70%;
 }
 
+.bold {
+    font-weight: bold;
+}
+
+@media screen and (min-width: 320px) and (max-width: 414px) {
+    body {
+        font-size: 11px;
+    }
+
+    #sidebar-btn {
+        margin: 5px;
+        height: initial;
+    }
+
+    .infoWindow {
+        font-size: 11px;
+    }
+}
+
+@media screen and (min-width: 415px) and (max-width: 800px) {
+    body,
+    .infoWindow {
+        font-size: 16px;
+    }
+
+    #sidebar-btn {
+        margin: 20px;
+        height: 20px;
+    }
+}
