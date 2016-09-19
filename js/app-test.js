@@ -79,10 +79,10 @@ var locationViewModel = function() {
     self.markers = ko.observableArray([]);
 
     /*
-         Go through each location in the observable array and
-         use geocode to get the latlng from the address and
-         create a marker for each location and populate infoWindow
-         with data from foursquare  when marker is clicked.
+     Go through each location in the observable array and
+     use geocode to get the latlng from the address and
+     create a marker for each location and populate infoWindow
+     with data from foursquare when marker or list item is clicked.
      */
     self.locationList().forEach(function (locationObj) {
         var locTitle = locationObj.title;
@@ -284,6 +284,8 @@ var locationViewModel = function() {
                         markerItem.setVisible(false);
                     }
                 });
+
+                // If there's a match update the list accordingly.
                 var string = location.title.toLowerCase();
                 return string.search(filter) >= 0;
             });
@@ -291,6 +293,7 @@ var locationViewModel = function() {
     }, this);
 };
 
+// Global variables.
 var map;
 var infoWindow;
 
