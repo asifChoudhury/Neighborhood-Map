@@ -1,3 +1,4 @@
+// Location array with information.
 var locations = [
     {
         title: "The Museum of Modern Art",
@@ -61,36 +62,42 @@ var locations = [
     }
 ];
 
+// Location object model.
 var locationModel = function(newLocation) {
     this.title = newLocation.title;
     this.location = newLocation.location;
-
 };
 
+// Location view model.
 var locationViewModel = function() {
     var self = this;
 
+    // Create an observable location array.
     self.locationList = ko.observableArray(locations);
 
+    // Create an observable markers array.
     self.markers = ko.observableArray([]);
 
-    self.currentMarker = ko.observable(this.markers()[0]);
-
+    /*
+         Go through each location in the observable array and
+         use geocode to get the latlng from the address and
+         create a marker for each location and populate infoWindow
+         with data from foursquare  when marker is clicked.
+     */
     self.locationList().forEach(function (locationObj) {
         var locTitle = locationObj.title;
         var address = locationObj.location.address;
-        //test purposes
-        // console.log(locTitle);
-        // console.log(address);
 
         var bounds = new google.maps.LatLngBounds();
         var geocoder = new google.maps.Geocoder();
 
+        // Get latlng from address.
         geocoder.geocode({'address': address}, function(results, status) {
             if (status === 'OK') {
                 var position = results[0].geometry.location;
                 var city;
                 var state;
+                // Get city and state from the returned results.
                 results[0].address_components.forEach( function(element) {
                     element.types.forEach( function(typeElement) {
                         if(typeElement == "sublocality_level_1") {
@@ -101,12 +108,20 @@ var locationViewModel = function() {
                         }
                     });
                 });
+                // Initialize city and state.
                 var cityState = city + ", " + state;
+
                 // Center the map.
                 map.setCenter(results[0].geometry.location);
+
                 // Set the zoom level.
-                map.setZoom(13);
-                // Create marker
+                if(window.innerWidth > 500) {
+                    map.setZoom(13);
+                } else {
+                    map.setZoom(12);
+                }
+
+                // Create marker.
                 locationObj.marker = new google.maps.Marker({
                     map: map,
                     position: position,
@@ -114,22 +129,31 @@ var locationViewModel = function() {
                     animation: google.maps.Animation.DROP,
                 });
 
-                // add the marker as a property of the location object
+                // Add the marker as a property of the location object.
                 self.markers().push(locationObj.marker);
+
                 // Create an onClick event to open an infoWindow at each marker.
                 locationObj.marker.addListener('click', function() {
+                    // Changes the center of the map to the given LatLng.
                     map.panTo(locationObj.marker.getPosition());
+
+                    // Build the foursquare url.
                     var fourSquareUrl = "https://api.foursquare.com/v2/venues/search?near=" + cityState + "&query=" + locTitle + "&client_id=VKDIKDKB5OJFMVYONXNAIVNYIHCQYAUYAE44UMNAR2FDH5N0&client_secret=WXSBDUCXPW1K0OXGQAHH31LOI2DX52HRVSJC3YQVQQAZHJ4T&v=20130918";
+
+                    // Variables to store data returned from foursquare request.
                     var categoryName;
                     var address;
                     var phone;
                     var website;
+
+                    // Send the request to foursquare for data.
                     $.getJSON(fourSquareUrl, function(data) {
                         categoryName = data.response.venues[0].categories[0].name;
                         address = data.response.venues[0].location.formattedAddress;
                         phone = data.response.venues[0].contact.formattedPhone;
                         website = data.response.venues[0].url;
 
+                        // If no phone or website can be obtained from foursquare, then initialize the variables with placeholder information.
                         if(!phone) {
                             phone = "No Phone";
                         }
@@ -137,82 +161,123 @@ var locationViewModel = function() {
                             website = "No Website";
                         }
 
+                        // Set content of the infoWindow with foursquare data.
                         infoWindow.setContent('<div class="bold infoWindow">' + locTitle +'</div>' +
                                               '<div class="infoWindow">' + categoryName +'</div>' +
                                               '<div class="infoWindow"><Span class="bold">Address:  </span>' + address +'</div>' +
                                               '<div class="infoWindow"><span class="bold">Phone:  </span>' + '<a href="' + phone + '">' + phone + '</a></div>' +
-                                              '<div class="infoWindow"><span class=bold>Website:  </span>' + '<a href="' + website + '">' + website + '</a></div>');
+                                              '<div class="infoWindow"><span class=bold>Website:  </span>' + '<a href="' + website + '">' + website + '</a></div>' +
+                                              '<div class="infoWindow-footer">provided by <span class="footer-color">Foursquare</span></div>');
+                        // Infowindow operations and marker animations.
                         infoWindowAction();
                     })
+                        // Set content of the infoWindow in case foursquare request results in an error.
                         .fail(function() {
                             infoWindow.setContent('<div class=bold>' + locTitle +'</div>');
                             infoWindowAction();
-                            //alert( "Foursquare can't be reached for information!" );
                         });
                 });
 
+                // Infowindow operations and marker animations.
                 function infoWindowAction() {
                     infoWindow.open(map, locationObj.marker);
-                        //close infoWindow
-                        infoWindow.addListener('closeClick', function() {
-                            infoWindow.setContent(null);
-                        });
-                        // Animate marker.
-                        if(locationObj.marker.getAnimation() !== null) {
+
+                    //close infoWindow
+                    infoWindow.addListener('closeClick', function() {
+                        infoWindow.setContent(null);
+                    });
+
+                    // Animate marker.
+                    if(locationObj.marker.getAnimation() !== null) {
+                        locationObj.marker.setAnimation(null);
+                    } else {
+                        locationObj.marker.setAnimation(google.maps.Animation.BOUNCE);
+                        locationObj.marker.setIcon(visitiedMarker);
+                        setTimeout(function() {
                             locationObj.marker.setAnimation(null);
-                        } else {
-                            locationObj.marker.setAnimation(google.maps.Animation.BOUNCE);
-                            locationObj.marker.setIcon(defaultIcon);
-                            setTimeout(function() {
-                                locationObj.marker.setAnimation(null);
-                            }, 1400);
-                        }
+                        }, 1400);
+                    }
                 }
 
-                // Style the markers a bit. This will be our listing marker icon.
-                var defaultIcon = makeMarkerIcon('AF551B');
+                // Change the default marker when a marker is visited or highlighted.
+                var visitiedMarker = makeMarkerIcon('AF551B');
 
-                // Create a "highlighted location" marker color for when the user
+                // Create a highlighted marker color for when the user
                 // mouses over the marker.
-                var highlightedIcon = makeMarkerIcon('FFFF24');
+                var highlightedMarker = makeMarkerIcon('FFFF24');
 
                 // Two event listeners - one for mouseover, one for mouseout,
                 // to change the colors back and forth.
                 locationObj.marker.addListener('mouseover', function() {
-                    this.setIcon(highlightedIcon);
+                    this.setIcon(highlightedMarker);
                 });
                 locationObj.marker.addListener('mouseout', function() {
-                    this.setIcon(defaultIcon);
+                    this.setIcon(visitiedMarker);
                 });
 
+                // Close infoWindow and set marker animarion to null when map is clicked.
                 map.addListener('click', function() {
                     infoWindow.close();
                     locationObj.marker.setAnimation(null);
                 });
 
+                // Extend the bound to reflect marker position.
                 bounds.extend(locationObj.marker.position);
             } else {
                 alert('Geocode was not successful for the following reason: ' + status);
             }
         });
+
+        // Sets the viewport to contain the given bounds.
         map.fitBounds(bounds);
     });
 
+    // Create an observable for sidebar.
+    self.showSidebar = ko.observable(false);
+
+    // Create an observable for map adjusment.
+    self.mapAdjust = ko.observable(false);
+
+    // Trigger this event on the marker when clicked.
     self.openInfoWindow = function(location) {
         google.maps.event.trigger(location.marker, 'click');
+        self.toggleSidebar();
     };
 
+    /*
+       If sidebar-btn is clicked sidebar opens and map adjusts.
+       If title is clicked which resides in the sidebar; sidebar closes and map readjusts.
+    */
+    self.toggleSidebar = function() {
+        if(self.showSidebar() == true) {
+            self.showSidebar(false);
+            self.mapAdjust(false);
+        } else {
+            self.showSidebar(true);
+            self.mapAdjust(true);
+        }
+    };
+
+    // Create an observable filter variable.
     self.filter = ko.observable("");
 
-    //filter the items using the filter text
+    // Filter the items using the filter text.
     self.filteredLocations = ko.computed(function() {
+        // Take the observable filter and convert it to lowercase.
         var filter = this.filter().toLowerCase();
+
+        // If filter variable has no value or is undefined return
+        // the default list otherwise return the filtered list.
         if (!filter) {
             return this.locationList();
         } else {
             return ko.utils.arrayFilter(this.locationList(), function(location) {
+                // Go through each marker and if there's a match
+                // set the marker to be visible
                 self.markers().forEach(function(markerItem) {
                     var stringToMatch = markerItem.title.toLowerCase();
+
+                    // If there's match, set marker to be visible, otherwise hide it.
                     if(stringToMatch.search(filter) >= 0) {
                         markerItem.setVisible(true);
                     } else {
@@ -226,28 +291,14 @@ var locationViewModel = function() {
     }, this);
 };
 
-$('body').on('click', '#sidebar-btn', function() {
-    toggleSidebarAndMap();
-});
-
-$('body').on('click', '#title', function() {
-    if (window.innerWidth < 1260) {
-        toggleSidebarAndMap();
-    }
-});
-
-function toggleSidebarAndMap () {
-    $('#sidebar').toggleClass('open');
-    $('#map').toggleClass('adjust');
-}
-
 var map;
 var infoWindow;
 
+// Initialize google maps with the given latlng and styles.
 function initMap() {
     map = new google.maps.Map(document.getElementById('map'), {
         center: {lat: 40.741359, lng: -73.9980244},
-        zoom: 12,
+        zoom: 13,
         styles: [
             {
               featureType: 'water',
@@ -289,15 +340,20 @@ function initMap() {
          ]
     });
 
+    // Initialize infoWindow.
     infoWindow = new google.maps.InfoWindow();
 
+    // Apply bindings to get knockout to work.
     ko.applyBindings(new locationViewModel());
 };
 
-// This function takes in a COLOR, and then creates a new marker
-// icon of that color. The icon will be 21 px wide by 34 high, have an origin
-// of 0, 0 and be anchored at 10, 34).
-//
+/*
+   This function takes in a COLOR, and then creates a new marker
+   icon of that color. The icon will be 21 px wide by 34 px high, have an origin
+   of 0, 0 and be anchored at 10, 34).
+
+   Attribution: Udacity "Google Maps APIS" course.
+*/
 function makeMarkerIcon(markerColor) {
     var markerImage = new google.maps.MarkerImage(
         'http://chart.googleapis.com/chart?chst=d_map_spin&chld=1.15|0|'+ markerColor +
@@ -310,11 +366,3 @@ function makeMarkerIcon(markerColor) {
 
     return markerImage;
 }
-
-// var url = 'https://api.foursquare.com/v2/venues/search?near="' + cityState + '"&query="' + titleLoc + '"&client_id=VKDIKDKB5OJFMVYONXNAIVNYIHCQYAUYAE44UMNAR2FDH5N0&client_secret=WXSBDUCXPW1K0OXGQAHH31LOI2DX52HRVSJC3YQVQQAZHJ4T&v=YYYYMMDD';
-
-// $.getJSON(url, function() {
-
-
-// });
-

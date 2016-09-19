@@ -42,7 +42,7 @@ body {
     margin: 0;
     float: left;
     width: 100%;
-    overflow: hidden;
+    overflow: scroll;
     height: 100%;
     cursor: pointer;
 }
@@ -91,6 +91,16 @@ body {
 
 .bold {
     font-weight: bold;
+}
+
+.infoWindow-footer {
+    font-size: 9px;
+    float: right;
+}
+
+.footer-color {
+    color: #3998d4;
+    font-weight: 400;
 }
 
 @media screen and (min-width: 320px) and (max-width: 414px) {
