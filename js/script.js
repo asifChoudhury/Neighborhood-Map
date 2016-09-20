@@ -180,7 +180,7 @@ var locationViewModel = function() {
                     })
                         // Set content of the infoWindow in case foursquare request results in an error.
                         .fail(function() {
-                            infoWindow.setContent('<div class=bold>' + locTitle +'</div>' + '<div>"FourSquare cannot load at this time."</div>');
+                            infoWindow.setContent('<div class=bold>' + locTitle +'</div><br><br><em><b>FourSquare</b> cannot load at this time.</em>');
                             infoWindowAction();
                         });
                 });
