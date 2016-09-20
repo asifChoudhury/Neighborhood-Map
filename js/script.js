@@ -19,15 +19,15 @@ var locations = [
         }
     },
     {
-        title: "Bryant Park",
+        title: "Grand Central Terminal",
         location: {
-            address: "Bryant Park, NY"
+            address: "89 E 42nd St, New York, NY 10017"
         }
     },
     {
-        title: "Hunter College",
+        title: "Empire State Building",
         location: {
-            address: "695 Park Ave, New York, NY 10065"
+            address: "350 5th Ave, New York, NY 10118"
         }
     },
     {
