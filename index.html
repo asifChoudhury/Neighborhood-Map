@@ -4,12 +4,12 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Neighborhood Map Project</title>
-    <link rel="stylesheet" type="text/css" href="css/styles.css">
+    <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
     <div id="sidebar" data-bind="css: { open: showSidebar }">
         <div id="header">New York Locations</div>
-        <input id="filter-text" type="placeholder" value="" data-bind="value: filter, valueUpdate: 'afterkeydown'">
+        <input id="filter-text" value="" data-bind="value: filter, valueUpdate: 'afterkeydown'">
         <ul id="location-list" data-bind="foreach: filteredLocations">
             <li id="title"><div data-bind="text: title, click: $parent.openInfoWindow"></div></li>
         </ul>
@@ -19,7 +19,7 @@
         <span></span>
         <span></span>
     </div>
-    <div id="map" data-bind="css: { adjust: mapAdjust }"></div>
+    <div id="map" data-bind="css: { adjust: mapAdjust }, event: { mouseover: highlightMarker, mouseout: visitMarker }"></div>
     <script src="js/lib/knockout-3.4.0.js"></script>
     <script src="js/lib/jquery-2.2.3.min.js"></script>
     <script src="js/script.js"></script>

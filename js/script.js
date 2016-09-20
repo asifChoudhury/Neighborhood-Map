@@ -79,10 +79,10 @@ var locationViewModel = function() {
     self.markers = ko.observableArray([]);
 
     /*
-     Go through each location in the observable array and
-     use geocode to get the latlng from the address and
-     create a marker for each location and populate infoWindow
-     with data from foursquare when marker or list item is clicked.
+       Go through each location in the observable array and
+       use geocode to get the latlng from the address and
+       create a marker for each location and populate infoWindow
+       with data from foursquare when marker or list item is clicked.
      */
     self.locationList().forEach(function (locationObj) {
         var locTitle = locationObj.title;
@@ -180,7 +180,7 @@ var locationViewModel = function() {
                     })
                         // Set content of the infoWindow in case foursquare request results in an error.
                         .fail(function() {
-                            infoWindow.setContent('<div class=bold>' + locTitle +'</div>');
+                            infoWindow.setContent('<div class=bold>' + locTitle +'</div>' + '<div>"FourSquare cannot load at this time."</div>');
                             infoWindowAction();
                         });
                 });
@@ -199,7 +199,7 @@ var locationViewModel = function() {
                         locationObj.marker.setAnimation(null);
                     } else {
                         locationObj.marker.setAnimation(google.maps.Animation.BOUNCE);
-                        locationObj.marker.setIcon(visitiedMarker);
+                        locationObj.marker.setIcon(visitedMarker);
                         setTimeout(function() {
                             locationObj.marker.setAnimation(null);
                         }, 1400);
@@ -207,19 +207,23 @@ var locationViewModel = function() {
                 }
 
                 // Change the default marker when a marker is visited or highlighted.
-                var visitiedMarker = makeMarkerIcon('AF551B');
+                var visitedMarker = makeMarkerIcon('AF551B');
 
-                // Create a highlighted marker color for when the user
-                // mouses over the marker.
+                /*
+                   Create a highlighted marker color for when the user
+                   mouses over the marker.
+                */
                 var highlightedMarker = makeMarkerIcon('FFFF24');
 
-                // Two event listeners - one for mouseover, one for mouseout,
-                // to change the colors back and forth.
+                /*
+                   Two event listeners - one for mouseover, one for mouseout,
+                   to change the colors back and forth.
+                */
                 locationObj.marker.addListener('mouseover', function() {
                     this.setIcon(highlightedMarker);
                 });
                 locationObj.marker.addListener('mouseout', function() {
-                    this.setIcon(visitiedMarker);
+                    this.setIcon(visitedMarker);
                 });
 
                 // Close infoWindow and set marker animarion to null when map is clicked.
@@ -273,14 +277,22 @@ var locationViewModel = function() {
         // Take the observable filter and convert it to lowercase.
         var filter = this.filter().toLowerCase();
 
-        // If filter variable has no value or is undefined return
-        // the default list otherwise return the filtered list.
+        /*
+           If filter variable has no value or is undefined return
+           the default list with markers otherwise return the filtered
+           list and hide the markers.
+        */
         if (!filter) {
+            self.markers().forEach(function(markerItem) {
+                markerItem.setVisible(true);
+            });
             return this.locationList();
         } else {
             return ko.utils.arrayFilter(this.locationList(), function(location) {
-                // Go through each marker and if there's a match
-                // set the marker to be visible
+                /*
+                   Go through each marker and if there's a match
+                   set the marker to be visible
+                */
                 self.markers().forEach(function(markerItem) {
                     var stringToMatch = markerItem.title.toLowerCase();
 
@@ -355,7 +367,7 @@ function initMap() {
 
     // Apply bindings to get knockout to work.
     ko.applyBindings(new locationViewModel());
-};
+}
 
 // In case of error, alert the user.
 function googleError () {
