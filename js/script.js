@@ -43,9 +43,9 @@ var locations = [
         }
     },
     {
-        title: "World Trade Center",
+        title: "St. Patrick's Cathedral",
         location: {
-            address: "285 Fulton St, New York, NY 10007"
+            address: "456 Madison Avenue, New York, NY 10022"
         }
     },
     {
