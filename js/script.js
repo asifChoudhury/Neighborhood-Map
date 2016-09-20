@@ -357,6 +357,7 @@ function initMap() {
     ko.applyBindings(new locationViewModel());
 };
 
+// In case of error, alert the user.
 function googleError () {
      alert("Google Maps failed to load!!!");
 }
